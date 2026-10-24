@@ -1,0 +1,919 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Anuroop Portfolio</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Hanken+Grotesk:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout concept: a senior account-management portfolio.
+   Sticky nav, hero with an availability card, platform lens tabs, playbooks, working tools, capabilities, founder note, contact. */
+:root {
+  --bg: #EEF1F4;
+  --surface: #FFFFFF;
+  --ink: #0F1A24;
+  --muted: #56636F;
+  --line: #D3DAE1;
+  --tint: #E3EAF0;
+  --accent: #0A5B6E;
+  --accent-ink: #FFFFFF;
+  --glow: rgba(10, 91, 110, 0.10);
+  --good: #1B7F4B;
+  --warn: #8F5B00;
+  --bad: #B3261E;
+  --stamp: #C2331F;
+  --f-display: "Bricolage Grotesque", "Helvetica Neue", Arial, sans-serif;
+  --f-body: "Hanken Grotesk", "Helvetica Neue", Arial, sans-serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0C1217; --surface: #131B22; --ink: #E7EDF2; --muted: #93A1AD; --line: #26323B;
+    --tint: #1A242D; --accent: #6CCBDA; --accent-ink: #06222A; --glow: rgba(108, 203, 218, 0.12);
+    --good: #59C58A; --warn: #E0A84A; --bad: #F08A80; --stamp: #F0705A; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0C1217; --surface: #131B22; --ink: #E7EDF2; --muted: #93A1AD; --line: #26323B;
+  --tint: #1A242D; --accent: #6CCBDA; --accent-ink: #06222A; --glow: rgba(108, 203, 218, 0.12);
+  --good: #59C58A; --warn: #E0A84A; --bad: #F08A80; --stamp: #F0705A; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+body {
+  background: var(--bg); color: var(--ink);
+  font-family: var(--f-body); font-size: 16px; line-height: 1.6;
+  padding-block: 20px 72px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 30; background: var(--bg); }
+.wrap { max-width: 1080px; margin: 0 auto; display: flex; flex-direction: column; gap: 60px; }
+a { color: var(--accent); }
+a:focus-visible, button:focus-visible, summary:focus-visible, input:focus-visible, textarea:focus-visible {
+  outline: 3px solid var(--accent); outline-offset: 2px; border-radius: 4px;
+}
+h1, h2, h3 { font-family: var(--f-display); text-wrap: balance; margin: 0; line-height: 1.1; letter-spacing: -0.01em; }
+p { margin: 0; }
+.label { font-family: var(--f-mono); font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+.fine { font-size: 13px; color: var(--muted); }
+section, header.hero { scroll-margin-top: 76px; }
+
+/* spotlight: soft glow that follows the pointer */
+[data-spot] { background: radial-gradient(260px circle at var(--mx, 75%) var(--my, -30%), var(--glow), transparent 70%), var(--surface); }
+
+/* top bar */
+.topbar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; background: var(--bg); display: flex; align-items: center; gap: 14px; padding-block: 10px; border-bottom: 1px solid var(--line); }
+.topbar .brand { font-family: var(--f-display); font-weight: 800; font-size: 1.15rem; text-decoration: none; color: var(--ink); }
+.topbar nav { display: flex; gap: 4px; overflow-x: auto; flex: 1; min-width: 0; scrollbar-width: none; }
+.topbar nav::-webkit-scrollbar { display: none; }
+.topbar nav a { font-size: 14px; padding: 6px 11px; border-radius: 999px; color: var(--muted); text-decoration: none; white-space: nowrap; }
+.topbar nav a:hover { color: var(--ink); }
+.topbar nav a.on { background: var(--tint); color: var(--ink); font-weight: 600; }
+.theme { font: inherit; font-size: 13px; background: var(--surface); color: var(--ink); border: 1px solid var(--line); border-radius: 999px; padding: 6px 12px; cursor: pointer; white-space: nowrap; }
+.progress { position: absolute; left: 0; bottom: -1px; height: 2px; width: calc(var(--p, 0) * 100%); background: var(--accent); }
+
+/* hero */
+.hero { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: 36px; align-items: start; }
+.hero-main { display: flex; flex-direction: column; gap: 20px; }
+.hero h1 { font-size: clamp(3.2rem, 10vw, 6rem); font-weight: 800; letter-spacing: -0.035em; }
+.product-title { font-family: var(--f-display); font-size: clamp(1.25rem, 2.7vw, 1.65rem); font-weight: 500; line-height: 1.3; max-width: 36ch; text-wrap: balance; }
+.intro { max-width: 62ch; color: var(--muted); font-size: 1.05rem; }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip { font-family: var(--f-mono); font-size: 12px; padding: 5px 11px; border: 1px solid var(--line); border-radius: 999px; background: var(--surface); }
+
+.buybox { border: 1px solid var(--line); border-radius: 10px; padding: 24px; display: flex; flex-direction: column; gap: 14px; }
+.buybox .price { font-family: var(--f-display); font-size: 2rem; font-weight: 700; line-height: 1.1; }
+.buybox dl { margin: 0; display: grid; grid-template-columns: auto 1fr; gap: 8px 16px; font-size: 14px; }
+.buybox dt { color: var(--muted); }
+.buybox dd { margin: 0; }
+.btn { font: inherit; font-weight: 600; border-radius: 999px; padding: 11px 18px; border: 1px solid var(--accent); cursor: pointer; text-align: center; text-decoration: none; display: block; }
+.btn.primary { background: var(--accent); color: var(--accent-ink); }
+.btn.ghost { background: transparent; color: var(--accent); }
+.btn:hover { filter: brightness(1.08); }
+
+.pick { display: grid; gap: 8px; }
+.opts { display: flex; flex-wrap: wrap; gap: 8px; }
+.opt { font: inherit; font-size: 13px; font-weight: 600; background: var(--bg); color: var(--ink); border: 1px solid var(--line); border-radius: 8px; padding: 7px 14px; cursor: pointer; }
+.opt[aria-pressed="true"] { border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); background: var(--tint); }
+.pick-note { font-size: 14px; color: var(--muted); min-height: 4.8em; }
+
+/* platforms strip */
+.strip { border-block: 1px solid var(--line); padding-block: 16px; display: flex; flex-wrap: wrap; gap: 10px 28px; align-items: baseline; }
+.strip .names { display: flex; flex-wrap: wrap; gap: 6px 26px; font-family: var(--f-display); font-size: 1.35rem; font-weight: 700; letter-spacing: -0.01em; }
+
+section { display: flex; flex-direction: column; gap: 22px; }
+.sec-head { display: flex; flex-direction: column; gap: 6px; }
+.sec-head h2 { font-size: clamp(1.7rem, 4vw, 2.3rem); font-weight: 700; }
+.sec-head p { color: var(--muted); max-width: 64ch; }
+
+.bullets { margin: 0; padding: 0; list-style: none; display: grid; gap: 14px; max-width: 76ch; }
+.bullets li { padding-left: 26px; position: relative; }
+.bullets li::before { content: ""; position: absolute; left: 4px; top: 0.62em; width: 8px; height: 8px; background: var(--accent); transform: rotate(45deg); }
+.bullets strong { font-weight: 600; }
+
+/* platform lens */
+.tabs { display: flex; flex-wrap: wrap; gap: 8px; }
+.tab { font: inherit; font-size: 14px; font-weight: 600; color: var(--muted); background: transparent; border: 1px solid var(--line); border-radius: 999px; padding: 8px 18px; cursor: pointer; }
+.tab:hover { color: var(--ink); }
+.tab[aria-selected="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.panel { border: 1px solid var(--line); border-radius: 10px; padding: 26px; display: grid; gap: 16px; }
+.panel h3 { font-size: 1.7rem; font-weight: 700; }
+.panel .angle { display: grid; gap: 4px; max-width: 70ch; }
+
+/* tools */
+.tool { border: 1px solid var(--line); border-radius: 10px; padding: 24px; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 28px; }
+.tool > * { min-width: 0; }
+.field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+.field label { font-size: 13px; font-weight: 600; }
+.field input, .field textarea { font: inherit; color: var(--ink); background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; width: 100%; resize: vertical; }
+.field textarea.mono { font-family: var(--f-mono); font-size: 13px; }
+.count { font-family: var(--f-mono); font-size: 12px; color: var(--muted); }
+.score { display: flex; align-items: baseline; gap: 10px; margin-bottom: 12px; }
+.score .num { font-family: var(--f-display); font-size: 2.6rem; font-weight: 800; line-height: 1; font-variant-numeric: tabular-nums; }
+.checks { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.checks li { display: grid; grid-template-columns: 56px minmax(0, 1fr); gap: 10px; align-items: start; font-size: 14px; }
+.pill { font-family: var(--f-mono); font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; text-align: center; padding: 3px 0; border-radius: 4px; border: 1px solid currentColor; }
+.pill.pass { color: var(--good); } .pill.warn { color: var(--warn); } .pill.fail { color: var(--bad); }
+
+.rng { display: grid; gap: 4px; margin-bottom: 16px; }
+.rng .top { display: flex; justify-content: space-between; gap: 12px; font-size: 13px; font-weight: 600; }
+.rng output { font-family: var(--f-mono); font-weight: 500; color: var(--accent); }
+.rng input[type="range"] { width: 100%; accent-color: var(--accent); }
+.big { font-family: var(--f-display); font-size: clamp(2rem, 6vw, 2.8rem); font-weight: 800; line-height: 1; font-variant-numeric: tabular-nums; }
+.bars { display: grid; gap: 12px; margin: 16px 0; }
+.barrow { display: grid; gap: 4px; font-size: 13px; }
+.barrow b { font-family: var(--f-mono); font-weight: 500; }
+.track { background: var(--tint); border-radius: 6px; height: 14px; overflow: hidden; }
+.fill { height: 100%; background: var(--muted); border-radius: 6px; transition: width 0.35s ease; }
+.fill.now { background: var(--accent); }
+.levers { list-style: none; margin: 0 0 12px; padding: 0; display: grid; gap: 6px; font-size: 14px; }
+.levers li { display: flex; justify-content: space-between; gap: 12px; border-bottom: 1px dashed var(--line); padding-bottom: 4px; }
+.levers li span:last-child { font-family: var(--f-mono); font-variant-numeric: tabular-nums; white-space: nowrap; }
+@media (prefers-reduced-motion: reduce) { .fill { transition: none; } }
+
+.chk-list { border: 0; margin: 0; padding: 0; display: grid; gap: 10px; min-width: 0; }
+.chk-list legend { padding: 0; margin-bottom: 12px; }
+.chk { display: grid; grid-template-columns: 22px minmax(0, 1fr); gap: 10px; align-items: start; font-size: 15px; cursor: pointer; }
+.chk input { width: 18px; height: 18px; margin: 3px 0 0; accent-color: var(--accent); }
+.level { font-family: var(--f-display); font-size: 1.25rem; font-weight: 700; margin: 12px 0 16px; }
+
+/* playbooks */
+.books { display: grid; gap: 12px; }
+details { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; }
+summary { cursor: pointer; padding: 18px 22px; list-style: none; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 16px; align-items: center; }
+summary::-webkit-details-marker { display: none; }
+summary h3 { font-size: 1.25rem; font-weight: 700; }
+summary .sub { grid-column: 1; color: var(--muted); font-size: 14px; }
+summary::after { content: "+"; grid-column: 2; grid-row: 1 / span 2; font-family: var(--f-mono); font-size: 1.4rem; color: var(--accent); }
+details[open] summary::after { content: "\2212"; }
+.book-body { padding: 0 22px 22px; display: grid; gap: 14px; }
+.steps { margin: 0; padding: 0; list-style: none; display: grid; gap: 10px; counter-reset: s; }
+.steps li { counter-increment: s; display: grid; grid-template-columns: 34px minmax(0, 1fr); gap: 10px; }
+.steps li::before { content: counter(s); font-family: var(--f-mono); font-size: 13px; color: var(--accent); border: 1px solid var(--line); border-radius: 50%; width: 28px; height: 28px; display: grid; place-items: center; }
+.formula { font-family: var(--f-mono); font-size: 14px; background: var(--tint); border-radius: 8px; padding: 12px 14px; overflow-x: auto; }
+
+.out { background: var(--tint); border-radius: 8px; padding: 14px; font-family: var(--f-mono); font-size: 13px; line-height: 1.55; white-space: pre-wrap; overflow-wrap: anywhere; margin: 0 0 12px; min-width: 0; }
+
+/* capabilities */
+.specs { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; margin: 0; }
+.spec-row { display: grid; grid-template-columns: 220px minmax(0, 1fr); gap: 8px 24px; padding: 14px 22px; border-top: 1px solid var(--line); }
+.spec-row:first-child { border-top: 0; }
+.spec-row:nth-child(odd) { background: var(--tint); }
+.spec-row dt { font-weight: 600; }
+.spec-row dd { margin: 0; color: var(--muted); }
+
+/* founder */
+.founder { border: 1px solid var(--line); border-radius: 10px; padding: 28px; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 28px; }
+.founder > * { min-width: 0; }
+.founder h2 { font-size: clamp(1.7rem, 4vw, 2.3rem); font-weight: 700; margin-bottom: 10px; }
+.mark { aspect-ratio: 16 / 10; max-width: 100%; border-radius: 8px; background: linear-gradient(135deg, var(--tint), var(--surface) 55%, var(--tint)); border: 1px solid var(--line); display: grid; place-items: center; font-family: var(--f-display); font-weight: 600; font-size: clamp(1.3rem, 3.4vw, 2rem); letter-spacing: 0.22em; text-transform: uppercase; text-align: center; padding: 16px; }
+
+/* contact */
+.contact { background: var(--accent); color: var(--accent-ink); border-radius: 10px; padding: 32px; display: grid; gap: 18px; }
+.contact h2 { font-size: clamp(1.8rem, 4.5vw, 2.6rem); font-weight: 800; max-width: 22ch; }
+.contact p { max-width: 58ch; }
+.contact .rows { display: grid; gap: 10px; }
+.crow { display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: center; background: rgba(255,255,255,0.14); border-radius: 8px; padding: 10px 14px; }
+.crow .k { font-family: var(--f-mono); font-size: 12px; text-transform: uppercase; letter-spacing: 0.08em; min-width: 76px; }
+.crow .v { font-family: var(--f-mono); font-size: 14px; overflow-wrap: anywhere; min-width: 0; flex: 1 1 160px; }
+.crow button { font: inherit; font-size: 13px; font-weight: 600; background: var(--accent-ink); color: var(--accent); border: 0; border-radius: 999px; padding: 6px 14px; cursor: pointer; }
+.contact a { color: inherit; }
+footer { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px 24px; font-size: 13px; color: var(--muted); }
+.hint { font-family: var(--f-mono); font-size: 13px; background: none; border: 0; padding: 0; color: var(--muted); cursor: pointer; text-decoration: underline dotted; }
+
+/* easter egg */
+.egg { position: fixed; inset: 0; z-index: 50; background: rgba(8, 14, 19, 0.72); display: grid; place-items: center;
+  padding: max(16px, env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) max(16px, env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px)); }
+.egg[hidden] { display: none !important; }
+.egg-card { background: var(--surface); color: var(--ink); border-radius: 12px; padding: 28px; max-width: 460px; width: 100%; display: grid; gap: 16px; position: relative; overflow: hidden; }
+.egg-card h3 { font-size: 1.6rem; font-weight: 800; }
+.stamp { justify-self: start; font-family: var(--f-mono); font-weight: 500; text-transform: uppercase; letter-spacing: 0.14em; color: var(--stamp); border: 3px solid var(--stamp); border-radius: 6px; padding: 6px 12px; transform: rotate(-5deg); animation: stampin 0.5s cubic-bezier(.2,1.6,.4,1) both; }
+@keyframes stampin { from { transform: rotate(-5deg) scale(2.4); opacity: 0; } to { transform: rotate(-5deg) scale(1); opacity: 1; } }
+.egg dl { display: grid; grid-template-columns: auto 1fr; gap: 6px 14px; margin: 0; font-size: 14px; }
+.egg dt { color: var(--muted); } .egg dd { margin: 0; }
+.egg-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+.bit { position: fixed; top: -30px; z-index: 60; font-family: var(--f-display); font-weight: 700; color: var(--accent); pointer-events: none; animation: fall linear forwards; }
+@keyframes fall { to { transform: translateY(115vh) rotate(360deg); opacity: 0.2; } }
+
+@media (max-width: 820px) {
+  .hero, .tool, .founder { grid-template-columns: minmax(0, 1fr); }
+  .spec-row { grid-template-columns: minmax(0, 1fr); gap: 2px; }
+  .wrap { gap: 46px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .stamp { animation: none; }
+  .bit { display: none; }
+}
+</style>
+
+<div class="wrap">
+  <div class="topbar">
+    <a class="brand" href="#top">Anuroop</a>
+    <nav aria-label="Sections">
+      <a href="#about">Profile</a>
+      <a href="#platforms">Platforms</a>
+      <a href="#playbooks">Playbooks</a>
+      <a href="#checker">Tools</a>
+      <a href="#specs">Capabilities</a>
+      <a href="#contact">Contact</a>
+    </nav>
+    <button class="theme" id="theme" type="button">Dark mode</button>
+    <span class="progress" aria-hidden="true"></span>
+  </div>
+
+  <header class="hero">
+    <div class="hero-main">
+      <p class="label">Portfolio</p>
+      <h1>Anuroop</h1>
+      <p class="product-title">E-commerce strategist &amp; marketplace expert on platforms like Amazon, Flipkart, Myntra, Nykaa, Ajio etc., with D2C as primary focus</p>
+      <p class="intro">I turn complex e-commerce catalogs into sales-ready assets. From maintaining listing quality and building scalable SOPs to identifying revenue gaps and strategizing for D2C brands, I bridge the gap between marketplace operations and business growth.</p>
+      <div class="chips" aria-label="Focus areas">
+        <span class="chip">Account management</span>
+        <span class="chip">D2C growth strategy</span>
+        <span class="chip">Catalog and content</span>
+        <span class="chip">Marketplace operations</span>
+        <span class="chip">SOPs and process</span>
+      </div>
+    </div>
+
+    <aside class="buybox" data-spot aria-label="Availability">
+      <p class="label">Availability</p>
+      <p class="price">Open to offers</p>
+      <dl>
+        <dt>Roles</dt><dd>Brand Specialist, Growth Strategist</dd>
+        <dt>Account management</dt><dd>End-to-end ownership for D2C brands on marketplaces</dd>
+        <dt>Platforms</dt><dd>Amazon, Flipkart, Myntra, Nykaa, Ajio</dd>
+      </dl>
+      <div class="pick">
+        <p class="label">Engagement</p>
+        <div class="opts">
+          <button class="opt" type="button" data-k="ct" aria-pressed="true">Contract</button>
+          <button class="opt" type="button" data-k="cs" aria-pressed="false">Consulting</button>
+        </div>
+        <p class="pick-note" id="pick-note" aria-live="polite">Time-boxed clean-ups, migrations and launches. I have done this as a contract Catalog Specialist at Amazon.</p>
+      </div>
+      <a class="btn primary" href="#contact">Work with me</a>
+      <a class="btn ghost" href="#playbooks">See how I work</a>
+    </aside>
+  </header>
+
+  <div class="strip">
+    <span class="label">Platforms</span>
+    <span class="names"><span>Amazon</span><span>Flipkart</span><span>Myntra</span><span>Nykaa</span><span>Ajio</span></span>
+  </div>
+
+  <section id="about">
+    <div class="sec-head">
+      <p class="label">Profile</p>
+      <h2>What I bring</h2>
+    </div>
+    <ul class="bullets">
+      <li><strong>Account ownership.</strong> I run marketplace accounts for D2C brands: planning, performance reviews, stakeholder updates and the follow-through that keeps them growing.</li>
+      <li><strong>Catalog quality, end to end.</strong> Structure, titles, attributes, images and variations, so listings can be found, pass review and convert.</li>
+      <li><strong>Revenue diagnosis.</strong> I break a gap into traffic, conversion, price, availability and Buy Box, then fix the real cause.</li>
+      <li><strong>Process that scales.</strong> I turn what lives in someone's head into SOPs a new team member can run on day one.</li>
+      <li><strong>Platform depth.</strong> In-house experience at Amazon, Flipkart, Myntra, Nykaa and Pepe Jeans, plus agency-side work, so I know where each platform's rules and workflows differ.</li>
+      <li><strong>A builder's view.</strong> Founder of Vera &amp; Lior, so I understand what a brand needs from a marketplace partner.</li>
+    </ul>
+  </section>
+
+  <section id="platforms">
+    <div class="sec-head">
+      <p class="label">Platform lens</p>
+      <h2>How I read each marketplace</h2>
+      <p>Every platform rewards something different. Pick one to see what I check first when taking over a D2C brand's account.</p>
+    </div>
+    <div class="tabs" id="ptabs" role="tablist" aria-label="Marketplaces"></div>
+    <div class="panel" id="ppanel" role="tabpanel" data-spot></div>
+  </section>
+
+  <section id="playbooks">
+    <div class="sec-head">
+      <p class="label">How I work</p>
+      <h2>Playbooks I work from</h2>
+      <p>Five short versions of how I run accounts and catalogs. Open one.</p>
+    </div>
+    <div class="books">
+      <details>
+        <summary>
+          <h3>Catalog audit in five passes</h3>
+          <span class="sub">Find what is blocking discovery, conversion or approval</span>
+        </summary>
+        <div class="book-body">
+          <ol class="steps">
+            <li><span><strong>Identity.</strong> Brand, product IDs, category and browse node. A listing in the wrong place never recovers.</span></li>
+            <li><span><strong>Copy.</strong> Title, bullets and description against the category style guide, with search terms covered once and not stuffed.</span></li>
+            <li><span><strong>Images.</strong> Main image rules, count, angles, and whether the set answers the buyer's first three questions.</span></li>
+            <li><span><strong>Structure.</strong> Parent and child variations, size and colour attributes, and duplicates that split reviews and traffic.</span></li>
+            <li><span><strong>Compliance.</strong> Suppressions, restricted claims, missing mandatory attributes. Fix the cause, then log it in the SOP.</span></li>
+          </ol>
+        </div>
+      </details>
+      <details>
+        <summary>
+          <h3>GMV diagnosis tree</h3>
+          <span class="sub">Work out where the revenue went before touching anything</span>
+        </summary>
+        <div class="book-body">
+          <p class="formula">GMV = visits &times; conversion rate &times; average order value</p>
+          <ol class="steps">
+            <li><span><strong>Visits fell?</strong> Check search visibility, ad coverage, suppressions and category changes.</span></li>
+            <li><span><strong>Conversion fell?</strong> Check content, images, reviews, delivery promise and price against competing offers.</span></li>
+            <li><span><strong>Order value fell?</strong> Check discount depth, mix shift and bundle or pack-size availability.</span></li>
+            <li><span><strong>Visits fine, sales still flat?</strong> Check stock, Buy Box ownership and the offer that actually shows to the buyer.</span></li>
+          </ol>
+        </div>
+      </details>
+      <details>
+        <summary>
+          <h3>The SOP template</h3>
+          <span class="sub">So the work survives a handover</span>
+        </summary>
+        <div class="book-body">
+          <ol class="steps">
+            <li><span><strong>Purpose and owner.</strong> One sentence on why the process exists and one named person accountable for it.</span></li>
+            <li><span><strong>Trigger and inputs.</strong> What starts it, and what must be in hand before step one.</span></li>
+            <li><span><strong>Steps with screenshots.</strong> Written so someone new can run it without asking.</span></li>
+            <li><span><strong>Quality check.</strong> A short checklist that decides pass or rework.</span></li>
+            <li><span><strong>Escalation and revision log.</strong> Who to call when it breaks, and what changed since the last version.</span></li>
+          </ol>
+        </div>
+      </details>
+      <details>
+        <summary>
+          <h3>Monthly business review</h3>
+          <span class="sub">The meeting that turns account data into decisions</span>
+        </summary>
+        <div class="book-body">
+          <ol class="steps">
+            <li><span><strong>Scorecard.</strong> Targets against actuals for GMV, units, conversion, price and availability, one page per marketplace.</span></li>
+            <li><span><strong>Diagnosis.</strong> What moved the number: traffic, conversion, order value, stock or Buy Box. Separate what we controlled from what we did not.</span></li>
+            <li><span><strong>Actions.</strong> Every action gets an owner, a date and an expected effect on the scorecard.</span></li>
+            <li><span><strong>Risks and asks.</strong> What could miss next month, and what is needed from the brand: stock, creative, budget or approvals.</span></li>
+            <li><span><strong>Next-month plan.</strong> Three priorities, a promotion calendar and the numbers we will be judged on. A written summary goes out within a day.</span></li>
+          </ol>
+        </div>
+      </details>
+      <details>
+        <summary>
+          <h3>Brand onboarding and launch plan</h3>
+          <span class="sub">The first 30 days with a new D2C brand</span>
+        </summary>
+        <div class="book-body">
+          <ol class="steps">
+            <li><span><strong>Access and ownership.</strong> Account roles, brand approvals, authorised contacts, and the documents each marketplace asks for, such as GST and trademark proof.</span></li>
+            <li><span><strong>Catalog readiness.</strong> Audit first, then fix IDs, categories, content and images before anything goes live.</span></li>
+            <li><span><strong>Commercial rules.</strong> Pricing, a margin floor, discount limits and return terms agreed with the brand in writing.</span></li>
+            <li><span><strong>Staged launch.</strong> Hero products first, with stock confirmed, deals and ads planned, and a quick check of every live page.</span></li>
+            <li><span><strong>Day-30 review.</strong> A baseline scorecard, a fix list and a fixed rhythm for ongoing reviews.</span></li>
+          </ol>
+        </div>
+      </details>
+    </div>
+  </section>
+
+  <section id="checker">
+    <div class="sec-head">
+      <p class="label">Working tools</p>
+      <h2>Listing title checker</h2>
+      <p>The kind of quick audit I run before a listing goes live. Paste a title and see where it breaks common marketplace style rules.</p>
+    </div>
+    <div class="tool" data-spot>
+      <div>
+        <div class="field">
+          <label for="brand">Brand</label>
+          <input id="brand" type="text" value="Vera &amp; Lior" autocomplete="off">
+        </div>
+        <div class="field">
+          <label for="title">Product title (example, edit freely)</label>
+          <textarea id="title" rows="5">Vera &amp; Lior Sterling Silver Minimal Hoop Earrings for Women, 925 Silver, Hypoallergenic, Everyday Jewellery, Gift for Her</textarea>
+          <span class="count" id="count" aria-live="polite"></span>
+        </div>
+      </div>
+      <div>
+        <div class="score"><span class="num" id="score">0/0</span><span class="label">checks passed</span></div>
+        <ul class="checks" id="checks"></ul>
+        <p class="fine" style="margin-top:14px">Rules of thumb drawn from common marketplace style guides. Always confirm against the category's current guidelines before publishing.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="simulator">
+    <div class="sec-head">
+      <h2>GMV simulator</h2>
+      <p>GMV is visits times conversion times order value, so a small lift in each term compounds. Set a baseline, set the lifts, and see which lever moves revenue most. The starting numbers are examples. Use your own.</p>
+    </div>
+    <div class="tool" data-spot>
+      <div>
+        <p class="label" style="margin-bottom:12px">Baseline per month</p>
+        <div class="rng"><div class="top"><label for="s-visits">Visits</label><output id="o-visits" for="s-visits"></output></div><input id="s-visits" type="range" min="1000" max="200000" step="1000" value="40000"></div>
+        <div class="rng"><div class="top"><label for="s-cr">Conversion rate</label><output id="o-cr" for="s-cr"></output></div><input id="s-cr" type="range" min="0.5" max="15" step="0.1" value="4"></div>
+        <div class="rng"><div class="top"><label for="s-aov">Average order value</label><output id="o-aov" for="s-aov"></output></div><input id="s-aov" type="range" min="200" max="10000" step="50" value="1800"></div>
+        <p class="label" style="margin:22px 0 12px">Lift from catalog and ops work</p>
+        <div class="rng"><div class="top"><label for="u-visits">Visits (suppression fixes, search terms)</label><output id="p-visits" for="u-visits"></output></div><input id="u-visits" type="range" min="0" max="30" step="1" value="10"></div>
+        <div class="rng"><div class="top"><label for="u-cr">Conversion (content, images)</label><output id="p-cr" for="u-cr"></output></div><input id="u-cr" type="range" min="0" max="30" step="1" value="10"></div>
+        <div class="rng"><div class="top"><label for="u-aov">Order value (bundles, pack sizes)</label><output id="p-aov" for="u-aov"></output></div><input id="u-aov" type="range" min="0" max="30" step="1" value="10"></div>
+      </div>
+      <div>
+        <p class="label">Baseline GMV per month</p>
+        <p class="big" id="r-base"></p>
+        <p class="fine" id="r-base-full" style="margin-top:6px"></p>
+        <div class="bars">
+          <div class="barrow"><span>Today <b id="b-base"></b></span><div class="track"><div class="fill" id="f-base"></div></div></div>
+          <div class="barrow"><span>After the lifts <b id="b-next"></b> <b id="b-lift"></b></span><div class="track"><div class="fill now" id="f-next"></div></div></div>
+        </div>
+        <p class="label" style="margin-bottom:8px">Each lever on its own</p>
+        <ul class="levers" id="levers"></ul>
+        <p class="fine" id="r-note" aria-live="polite"></p>
+      </div>
+    </div>
+  </section>
+
+  <section id="readiness">
+    <div class="sec-head">
+      <h2>Brand account readiness check</h2>
+      <p>The first-week check I run when a D2C brand hands over its marketplace accounts. Tick what is true today. The ticks shown are an example.</p>
+    </div>
+    <div class="tool" data-spot>
+      <fieldset class="chk-list">
+        <legend class="label">What is in place</legend>
+      </fieldset>
+      <div>
+        <div class="score"><span class="num" id="rc-score">0/8</span><span class="label">in place</span></div>
+        <div class="track" aria-hidden="true"><div class="fill now" id="rc-fill"></div></div>
+        <p class="level" id="rc-level" aria-live="polite"></p>
+        <p class="label" style="margin-bottom:10px">Start here</p>
+        <ol class="steps" id="rc-next"></ol>
+      </div>
+    </div>
+  </section>
+
+  <section id="sop">
+    <div class="sec-head">
+      <h2>SOP builder</h2>
+      <p>Describe a process in plain lines and get a structured SOP back, ready to copy into a doc. The fields hold an example. Replace it with yours.</p>
+    </div>
+    <div class="tool" data-spot>
+      <div>
+        <div class="field"><label for="p-name">Process name</label><input id="p-name" type="text" value="New product listing QC" autocomplete="off"></div>
+        <div class="field"><label for="p-owner">Owner</label><input id="p-owner" type="text" value="Catalog lead" autocomplete="off"></div>
+        <div class="field"><label for="p-trigger">Trigger</label><input id="p-trigger" type="text" value="A new SKU batch arrives from the brand team" autocomplete="off"></div>
+        <div class="field"><label for="p-steps">Steps (one per line)</label><textarea class="mono" id="p-steps" rows="5">Check brand, product ID and category against the input sheet
+Write title and bullets using the category style guide
+Upload images and confirm the main image rule
+Map variations and attributes, then submit
+Log suppressions and fix the cause</textarea></div>
+        <div class="field"><label for="p-checks">Quality checks (one per line)</label><textarea class="mono" id="p-checks" rows="3">Title matches the style guide
+Every mandatory attribute is filled
+No suppressions after 24 hours</textarea></div>
+      </div>
+      <div>
+        <p class="label" style="margin-bottom:8px">Your SOP</p>
+        <pre class="out" id="sop-out" aria-live="polite"></pre>
+        <button class="btn ghost" type="button" data-copy="sop-out">Copy SOP</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="specs">
+    <div class="sec-head">
+      <p class="label">Capabilities</p>
+      <h2>Skills at a glance</h2>
+    </div>
+    <dl class="specs">
+      <div class="spec-row"><dt>Account management</dt><dd>Marketplace account ownership for D2C brands, monthly business reviews, brand onboarding and launch plans, stakeholder communication, escalations</dd></div>
+      <div class="spec-row"><dt>Growth strategy</dt><dd>GMV diagnosis, promotion and deal planning, pricing and availability follow-up, visibility and advertising planning</dd></div>
+      <div class="spec-row"><dt>Catalog management</dt><dd>Listing creation and cleanup, attribute and category mapping, variation and parent-child structure, bulk uploads, suppression fixes</dd></div>
+      <div class="spec-row"><dt>Content quality</dt><dd>Titles, bullets, descriptions, image briefs, style guide compliance across Indian marketplaces</dd></div>
+      <div class="spec-row"><dt>Marketplace operations</dt><dd>Day-to-day account health, seller and vendor workflows, platform policy tracking</dd></div>
+      <div class="spec-row"><dt>Brand specialist work</dt><dd>Brand registry and protection tasks, brand-to-platform coordination, launch readiness</dd></div>
+      <div class="spec-row"><dt>Process and SOPs</dt><dd>Process mapping, SOP writing, QA checklists, training new team members</dd></div>
+      <div class="spec-row"><dt>Working styles</dt><dd>In-house at Amazon, Flipkart, Myntra, Nykaa and Pepe Jeans, agency-side, and contract (Catalog Specialist at Amazon, via Polkadot Creative)</dd></div>
+    </dl>
+  </section>
+
+  <section id="founder">
+    <div class="founder" data-spot>
+      <div>
+        <p class="label">From the maker</p>
+        <h2>Vera &amp; Lior</h2>
+        <p class="intro" style="margin-bottom:16px">My own D2C brand of luxury minimal silver jewellery. I handle brand architecture, vendor sourcing, SOPs and go-to-market myself. That is why I care about clean catalog data and clear account ownership: I feel the cost of a weak listing on my own store.</p>
+        <div class="chips">
+          <span class="chip">Brand architecture</span>
+          <span class="chip">Vendor sourcing</span>
+          <span class="chip">SOPs</span>
+          <span class="chip">Go-to-market</span>
+        </div>
+        <p style="margin-top:16px"><a href="https://veralior.com" target="_blank" rel="noopener">veralior.com</a></p>
+      </div>
+      <div class="mark" role="img" aria-label="Vera and Lior wordmark">Vera &amp; Lior</div>
+    </div>
+  </section>
+
+  <section id="contact">
+    <div class="contact">
+      <p class="label" style="color:inherit;opacity:.8">Contact</p>
+      <h2>Let's grow your brand's marketplace business.</h2>
+      <p>If you need someone to own your marketplace accounts, tighten the catalog, write the process down and chase the revenue number, send a note.</p>
+      <div class="rows">
+        <div class="crow"><span class="k">Email</span><span class="v" id="v-email"><a href="mailto:anuroopcm555@gmail.com">anuroopcm555@gmail.com</a></span><button type="button" data-copy="v-email">Copy</button></div>
+        <div class="crow"><span class="k">LinkedIn</span><span class="v" id="v-li"><a href="https://www.linkedin.com/in/anuroopcm/" target="_blank" rel="noopener">https://www.linkedin.com/in/anuroopcm/</a></span><button type="button" data-copy="v-li">Copy</button></div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <span>Anuroop &middot; Portfolio &middot; Updated October 2026</span>
+    <button class="hint" id="hint" type="button">Psst. Type "buybox".</button>
+  </footer>
+</div>
+
+<div class="egg" id="egg" hidden role="dialog" aria-modal="true" aria-labelledby="egg-title">
+  <div class="egg-card">
+    <span class="stamp">Buy Box won</span>
+    <h3 id="egg-title">You found the hidden attribute.</h3>
+    <dl>
+      <dt>Condition</dt><dd>New</dd>
+      <dt>Fulfilled by</dt><dd>Anuroop (FBA, Fulfilled By Anuroop)</dd>
+      <dt>Returns</dt><dd>Not accepted. Renewals only.</dd>
+      <dt>Delivery</dt><dd>One business day, straight to your inbox</dd>
+    </dl>
+    <p class="fine">Most people skip the fine print. You read it. Let's talk.</p>
+    <div class="egg-actions">
+      <a class="btn primary" href="#contact" id="egg-go">Take me to contact</a>
+      <button class="btn ghost" type="button" id="egg-close">Close</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  function $(id) { return document.getElementById(id); }
+  function money(n) { return '₹' + Math.round(n).toLocaleString('en-IN'); }
+  function shortMoney(n) {
+    if (n >= 1e7) return '₹' + (n / 1e7).toFixed(2) + ' Cr';
+    if (n >= 1e5) return '₹' + (n / 1e5).toFixed(2) + ' L';
+    return money(n);
+  }
+  function lines(s) { return s.split('\n').map(function (x) { return x.trim(); }).filter(Boolean); }
+
+  /* ---------- top bar: active section, progress, theme ---------- */
+  var topbar = document.querySelector('.topbar');
+  var navLinks = [].slice.call(document.querySelectorAll('.topbar nav a'));
+  var navSecs = navLinks.map(function (a) { return document.getElementById(a.getAttribute('href').slice(1)); });
+  var ticking = false;
+  function onScroll() {
+    ticking = false;
+    var y = window.scrollY || document.documentElement.scrollTop || 0;
+    var h = document.documentElement.scrollHeight - window.innerHeight;
+    topbar.style.setProperty('--p', h > 0 ? Math.min(1, y / h) : 0);
+    var cur = -1;
+    navSecs.forEach(function (s, i) { if (s && s.getBoundingClientRect().top <= 140) cur = i; });
+    navLinks.forEach(function (a, i) { a.classList.toggle('on', i === cur); });
+  }
+  window.addEventListener('scroll', function () {
+    if (!ticking) { ticking = true; requestAnimationFrame(onScroll); }
+  }, { passive: true });
+  onScroll();
+
+  var themeBtn = $('theme');
+  function curTheme() {
+    var t = document.documentElement.getAttribute('data-theme');
+    if (t) return t;
+    return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  }
+  function paintTheme() { themeBtn.textContent = curTheme() === 'dark' ? 'Light mode' : 'Dark mode'; }
+  themeBtn.addEventListener('click', function () {
+    document.documentElement.setAttribute('data-theme', curTheme() === 'dark' ? 'light' : 'dark');
+    paintTheme();
+  });
+  paintTheme();
+
+  /* ---------- pointer spotlight ---------- */
+  document.querySelectorAll('[data-spot]').forEach(function (el) {
+    el.addEventListener('pointermove', function (e) {
+      var r = el.getBoundingClientRect();
+      el.style.setProperty('--mx', (e.clientX - r.left) + 'px');
+      el.style.setProperty('--my', (e.clientY - r.top) + 'px');
+    });
+    el.addEventListener('pointerleave', function () {
+      el.style.removeProperty('--mx');
+      el.style.removeProperty('--my');
+    });
+  });
+
+  /* ---------- engagement picker ---------- */
+  var notes = {
+    ct: 'Time-boxed clean-ups, migrations and launches. I have done this as a contract Catalog Specialist at Amazon.',
+    cs: 'I audit your accounts, hand you a prioritised growth plan and a written SOP set your team can run without me.'
+  };
+  var opts = [].slice.call(document.querySelectorAll('.opt'));
+  opts.forEach(function (b) {
+    b.addEventListener('click', function () {
+      opts.forEach(function (x) { x.setAttribute('aria-pressed', x === b ? 'true' : 'false'); });
+      $('pick-note').textContent = notes[b.getAttribute('data-k')];
+    });
+  });
+
+  /* ---------- platform lens ---------- */
+  var PLATFORMS = [
+    { name: 'Amazon', points: [
+      'Brand Registry, brand store and A+ content, so the brand controls how it is presented',
+      'Buy Box ownership, price parity and unauthorised sellers',
+      'Search terms, advertising coverage and suppression alerts'
+    ], angle: 'Protect the brand page first, then scale visibility.' },
+    { name: 'Flipkart', points: [
+      'Catalog and FSN accuracy, with attributes mapped to the right category',
+      'Price and offer competitiveness against similar listings',
+      'Fulfilment and delivery promise, including assured eligibility'
+    ], angle: 'Win on price clarity and a reliable delivery promise.' },
+    { name: 'Myntra', points: [
+      'Fashion attributes, size charts and fit information that cut returns',
+      'Imagery and styling consistency across the brand\'s range',
+      'Discount and promotion planning aligned with the brand\'s margin'
+    ], angle: 'Fit and presentation decide returns, so fix those before pushing volume.' },
+    { name: 'Nykaa', points: [
+      'Category compliance and claims, with product and ingredient detail accurate and complete',
+      'Brand page presentation and hero product positioning',
+      'Authenticity and trust signals that beauty buyers look for'
+    ], angle: 'In beauty, trust and accuracy come before reach.' },
+    { name: 'Ajio', points: [
+      'Fashion catalog depth, with complete attributes and variants',
+      'Brand page and visual consistency across the range',
+      'Promotion calendar aligned with the platform\'s sale events'
+    ], angle: 'Build range depth and keep the brand look consistent.' }
+  ];
+  var tabsEl = $('ptabs'), panelEl = $('ppanel');
+  var tabBtns = [];
+  function showPlatform(i, focus) {
+    var p = PLATFORMS[i];
+    tabBtns.forEach(function (b, j) {
+      b.setAttribute('aria-selected', j === i ? 'true' : 'false');
+      b.tabIndex = j === i ? 0 : -1;
+    });
+    panelEl.setAttribute('aria-labelledby', 'tab-' + i);
+    panelEl.innerHTML = '';
+    var h = document.createElement('h3'); h.textContent = p.name;
+    var lab = document.createElement('p'); lab.className = 'label'; lab.textContent = 'What I check first';
+    var ul = document.createElement('ul'); ul.className = 'bullets';
+    p.points.forEach(function (t) { var li = document.createElement('li'); li.textContent = t; ul.appendChild(li); });
+    var ang = document.createElement('div'); ang.className = 'angle';
+    var al = document.createElement('p'); al.className = 'label'; al.textContent = 'D2C angle';
+    var at = document.createElement('p'); at.textContent = p.angle;
+    ang.appendChild(al); ang.appendChild(at);
+    panelEl.appendChild(h); panelEl.appendChild(lab); panelEl.appendChild(ul); panelEl.appendChild(ang);
+    if (focus) tabBtns[i].focus();
+  }
+  PLATFORMS.forEach(function (p, i) {
+    var b = document.createElement('button');
+    b.className = 'tab'; b.type = 'button'; b.id = 'tab-' + i;
+    b.setAttribute('role', 'tab'); b.textContent = p.name;
+    b.addEventListener('click', function () { showPlatform(i, false); });
+    b.addEventListener('keydown', function (e) {
+      var n = null;
+      if (e.key === 'ArrowRight') n = (i + 1) % PLATFORMS.length;
+      else if (e.key === 'ArrowLeft') n = (i - 1 + PLATFORMS.length) % PLATFORMS.length;
+      if (n !== null) { e.preventDefault(); showPlatform(n, true); }
+    });
+    tabsEl.appendChild(b); tabBtns.push(b);
+  });
+  showPlatform(0, false);
+
+  /* ---------- title checker ---------- */
+  var titleEl = $('title'), brandEl = $('brand'), checksEl = $('checks'), scoreEl = $('score'), countEl = $('count');
+  var STOP = ['with', 'for', 'and', 'the', 'from', 'your', 'that', 'this'];
+  var PROMO = ['free shipping', 'best seller', 'bestseller', 'sale', 'cheap', 'discount', 'offer', '#1', '100%', 'lowest price', 'guaranteed'];
+  function analyse(title, brand) {
+    var out = [];
+    var t = title.trim();
+    var len = t.length;
+    var lower = t.toLowerCase();
+    if (len === 0) { out.push(['fail', 'Add a title to check.']); return out; }
+    if (len > 200) out.push(['fail', 'Length is ' + len + ' characters. Trim it under 200, and aim for 80 to 150.']);
+    else if (len < 50) out.push(['warn', 'Length is ' + len + ' characters. Short titles leave search terms unused.']);
+    else if (len > 150) out.push(['warn', 'Length is ' + len + ' characters. Is it readable on mobile? Consider trimming below 150.']);
+    else out.push(['pass', 'Length is ' + len + ' characters, in the healthy range.']);
+    var b = brand.trim().toLowerCase();
+    if (!b) out.push(['warn', 'Enter the brand to check the title opens with it.']);
+    else if (lower.indexOf(b) === 0) out.push(['pass', 'Title opens with the brand name.']);
+    else out.push(['warn', 'Title does not open with the brand name.']);
+    var promoHit = PROMO.filter(function (p) { return lower.indexOf(p) !== -1; });
+    if (promoHit.length) out.push(['fail', 'Promotional wording found: ' + promoHit.join(', ') + '. Move it out of the title.']);
+    else out.push(['pass', 'No promotional wording.']);
+    var bad = t.match(/[!$?~^{}<>*]/g);
+    if (bad) out.push(['fail', 'Decorative characters found: ' + Array.from(new Set(bad)).join(' ') + '. Remove them.']);
+    else out.push(['pass', 'No decorative characters.']);
+    var caps = (t.match(/\b[A-Z]{3,}\b/g) || []).filter(function (w) { return !/^\d/.test(w); });
+    if (caps.length > 1) out.push(['warn', 'Several ALL CAPS words (' + caps.join(', ') + '). Use title case.']);
+    else out.push(['pass', 'Capitalisation looks normal.']);
+    var counts = {};
+    (lower.match(/[a-z]{4,}/g) || []).forEach(function (w) { if (STOP.indexOf(w) === -1) counts[w] = (counts[w] || 0) + 1; });
+    var rep = Object.keys(counts).filter(function (w) { return counts[w] > 2; });
+    if (rep.length) out.push(['warn', 'Repeated more than twice: ' + rep.join(', ') + '.']);
+    else out.push(['pass', 'No word is repeated more than twice.']);
+    return out;
+  }
+  function renderChecker() {
+    var res = analyse(titleEl.value, brandEl.value);
+    var passed = res.filter(function (r) { return r[0] === 'pass'; }).length;
+    scoreEl.textContent = passed + '/' + res.length;
+    countEl.textContent = titleEl.value.trim().length + ' characters';
+    checksEl.innerHTML = '';
+    var names = { pass: 'Pass', warn: 'Check', fail: 'Fix' };
+    res.forEach(function (r) {
+      var li = document.createElement('li');
+      var pill = document.createElement('span'); pill.className = 'pill ' + r[0]; pill.textContent = names[r[0]];
+      var msg = document.createElement('span'); msg.textContent = r[1];
+      li.appendChild(pill); li.appendChild(msg); checksEl.appendChild(li);
+    });
+  }
+  titleEl.addEventListener('input', renderChecker);
+  brandEl.addEventListener('input', renderChecker);
+  renderChecker();
+
+  /* ---------- GMV simulator ---------- */
+  function sim() {
+    var v = +$('s-visits').value, c = +$('s-cr').value / 100, a = +$('s-aov').value;
+    var uv = +$('u-visits').value / 100, uc = +$('u-cr').value / 100, ua = +$('u-aov').value / 100;
+    $('o-visits').textContent = v.toLocaleString('en-IN');
+    $('o-cr').textContent = (c * 100).toFixed(1) + '%';
+    $('o-aov').textContent = money(a);
+    $('p-visits').textContent = '+' + Math.round(uv * 100) + '%';
+    $('p-cr').textContent = '+' + Math.round(uc * 100) + '%';
+    $('p-aov').textContent = '+' + Math.round(ua * 100) + '%';
+    var base = v * c * a;
+    var next = v * (1 + uv) * c * (1 + uc) * a * (1 + ua);
+    var orders = Math.round(v * c);
+    $('r-base').textContent = shortMoney(base);
+    $('r-base-full').textContent = money(base) + ' from about ' + orders.toLocaleString('en-IN') + ' orders';
+    $('b-base').textContent = shortMoney(base);
+    $('b-next').textContent = shortMoney(next);
+    $('b-lift').textContent = '(+' + ((next / base - 1) * 100).toFixed(1) + '%)';
+    var mx = Math.max(base, next);
+    $('f-base').style.width = (base / mx * 100) + '%';
+    $('f-next').style.width = (next / mx * 100) + '%';
+    var list = $('levers');
+    list.innerHTML = '';
+    [['Visits', uv], ['Conversion', uc], ['Order value', ua]].forEach(function (p) {
+      var li = document.createElement('li');
+      var l = document.createElement('span'); l.textContent = p[0];
+      var r = document.createElement('span'); r.textContent = '+' + shortMoney(base * p[1]);
+      li.appendChild(l); li.appendChild(r); list.appendChild(li);
+    });
+    var sum = base * (uv + uc + ua);
+    var together = next - base;
+    $('r-note').textContent = 'Together the three add ' + shortMoney(together) + ' a month. That is ' + shortMoney(Math.max(0, together - sum)) + ' more than the levers add separately, because each lift applies to a larger base.';
+  }
+  ['s-visits', 's-cr', 's-aov', 'u-visits', 'u-cr', 'u-aov'].forEach(function (id) { $(id).addEventListener('input', sim); });
+  sim();
+
+  /* ---------- brand readiness check ---------- */
+  var READY = [
+    ['Brand is registered or approved on every marketplace you sell on', 'Without brand control, others can edit your listings and sell under your name.', true],
+    ['Catalog was audited in the last 90 days', 'Wrong categories and thin content cap both search visibility and conversion.', true],
+    ['Hero products have full images and brand content', 'Your best sellers carry the account, so they need the strongest pages.', true],
+    ['Price and discount rules are agreed in writing', 'Unplanned discounting erodes margin and confuses buyers.', false],
+    ['Stock plan covers the next 60 days of demand', 'Stock-outs lose the Buy Box and search rank, which takes weeks to rebuild.', true],
+    ['A visibility plan is in place (ads, deals, promotions)', 'Good listings still need traffic. Plan spend against margin.', false],
+    ['Ratings and reviews are checked every week', 'Early review problems are cheap to fix and expensive to ignore.', false],
+    ['A monthly business review is on the calendar', 'Reviews turn data into decisions and keep everyone accountable.', false]
+  ];
+  var legend = document.querySelector('.chk-list');
+  var boxes = READY.map(function (r, i) {
+    var lab = document.createElement('label'); lab.className = 'chk'; lab.setAttribute('for', 'rc-' + i);
+    var cb = document.createElement('input'); cb.type = 'checkbox'; cb.id = 'rc-' + i; cb.checked = r[2];
+    var tx = document.createElement('span'); tx.textContent = r[0];
+    lab.appendChild(cb); lab.appendChild(tx); legend.appendChild(lab);
+    cb.addEventListener('change', renderReady);
+    return cb;
+  });
+  function renderReady() {
+    var n = boxes.filter(function (b) { return b.checked; }).length;
+    $('rc-score').textContent = n + '/' + READY.length;
+    $('rc-fill').style.width = (n / READY.length * 100) + '%';
+    $('rc-level').textContent = n <= 3 ? 'Groundwork needed' : (n <= 6 ? 'Solid base, gaps to close' : 'Ready to scale');
+    var next = $('rc-next'); next.innerHTML = '';
+    var open = [];
+    boxes.forEach(function (b, i) { if (!b.checked) open.push(i); });
+    if (!open.length) {
+      var li = document.createElement('li'); var sp = document.createElement('span');
+      sp.textContent = 'Everything is in place. Move on to scaling: new categories, deeper advertising and new marketplaces.';
+      li.appendChild(sp); next.appendChild(li);
+      return;
+    }
+    open.slice(0, 3).forEach(function (i) {
+      var li = document.createElement('li'); var sp = document.createElement('span');
+      var st = document.createElement('strong'); st.textContent = READY[i][0] + '. ';
+      sp.appendChild(st); sp.appendChild(document.createTextNode(READY[i][1]));
+      li.appendChild(sp); next.appendChild(li);
+    });
+  }
+  renderReady();
+
+  /* ---------- SOP builder ---------- */
+  function sopBuild() {
+    var name = $('p-name').value.trim() || 'Untitled process';
+    var owner = $('p-owner').value.trim() || 'Unassigned';
+    var trigger = $('p-trigger').value.trim() || 'Add what starts this process';
+    var steps = lines($('p-steps').value);
+    var checks = lines($('p-checks').value);
+    var d = new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
+    var t = 'SOP: ' + name + '\nOwner: ' + owner + '\nVersion: 1.0 (' + d + ')\n\n';
+    t += 'PURPOSE\nRun "' + name + '" the same way every time, whoever is on shift.\n\n';
+    t += 'TRIGGER\n' + trigger + '\n\n';
+    t += 'STEPS\n' + (steps.length ? steps.map(function (s, i) { return (i + 1) + '. ' + s; }).join('\n') : '(add steps, one per line)') + '\n\n';
+    t += 'QUALITY CHECK\n' + (checks.length ? checks.map(function (s) { return '[ ] ' + s; }).join('\n') : '[ ] Add at least one check') + '\n\n';
+    t += 'ESCALATION\nIf blocked for more than one working day, tell ' + owner + '.\n\n';
+    t += 'REVISION LOG\nv1.0  ' + d + '  Created';
+    $('sop-out').textContent = t;
+  }
+  ['p-name', 'p-owner', 'p-trigger', 'p-steps', 'p-checks'].forEach(function (id) { $(id).addEventListener('input', sopBuild); });
+  sopBuild();
+
+  /* ---------- copy buttons ---------- */
+  document.querySelectorAll('[data-copy]').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var node = $(btn.getAttribute('data-copy'));
+      var text = node.textContent;
+      var done = function () { var old = btn.textContent; btn.textContent = 'Copied'; setTimeout(function () { btn.textContent = old; }, 1400); };
+      var fallback = function () {
+        var r = document.createRange(); r.selectNodeContents(node);
+        var s = window.getSelection(); s.removeAllRanges(); s.addRange(r);
+      };
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(done, fallback);
+      } else { fallback(); }
+    });
+  });
+
+  /* ---------- easter egg ---------- */
+  var egg = $('egg'), closeBtn = $('egg-close'), lastFocus = null, buf = '';
+  function confetti() {
+    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    var glyphs = ['₹', '◆', '₹', '✦'];
+    for (var i = 0; i < 38; i++) {
+      var s = document.createElement('span');
+      s.className = 'bit';
+      s.textContent = glyphs[i % glyphs.length];
+      s.style.left = (Math.random() * 100) + 'vw';
+      s.style.fontSize = (14 + Math.random() * 18) + 'px';
+      s.style.animationDuration = (2 + Math.random() * 2.2) + 's';
+      s.style.animationDelay = (Math.random() * 0.6) + 's';
+      document.body.appendChild(s);
+      setTimeout((function (n) { return function () { n.remove(); }; })(s), 5200);
+    }
+  }
+  function openEgg() {
+    if (!egg.hidden) return;
+    lastFocus = document.activeElement;
+    egg.hidden = false;
+    closeBtn.focus();
+    confetti();
+  }
+  function closeEgg() {
+    egg.hidden = true;
+    if (lastFocus && lastFocus.focus) lastFocus.focus();
+  }
+  closeBtn.addEventListener('click', closeEgg);
+  $('egg-go').addEventListener('click', closeEgg);
+  $('hint').addEventListener('click', openEgg);
+  egg.addEventListener('click', function (e) { if (e.target === egg) closeEgg(); });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && !egg.hidden) { closeEgg(); return; }
+    var tag = (e.target && e.target.tagName) || '';
+    if (tag === 'INPUT' || tag === 'TEXTAREA') return;
+    buf = (buf + (e.key || '').toLowerCase()).slice(-6);
+    if (buf === 'buybox') { buf = ''; openEgg(); }
+  });
+
+  try {
+    console.log('%cAnuroop%c  Catalog quality is a habit. Type "buybox" on the page for a surprise.',
+      'font-weight:700;font-size:14px;padding:2px 8px;background:#0A5B6E;color:#fff;border-radius:3px', 'font-family:monospace');
+  } catch (e) {}
+})();
+</script>
+
+</html>
